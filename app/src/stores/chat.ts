@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Message, MessageRole } from '@/types'
+import { sendChatMessage } from '@/services/api'
 
 export const useChatStore = defineStore('chat', () => {
   const messages = ref<Message[]>([])
@@ -52,6 +53,13 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  function updateMessageError(id: string, error: string) {
+    const message = messages.value.find(m => m.id === id)
+    if (message) {
+      message.error = error
+    }
+  }
+
   function deleteMessages(ids: string[]) {
     messages.value = messages.value.filter(m => !ids.includes(m.id))
     selectedMessageIds.value = []
@@ -85,6 +93,40 @@ export const useChatStore = defineStore('chat', () => {
     editingMessageId.value = id
   }
 
+  async function resendMessage(id: string) {
+    const message = messages.value.find(m => m.id === id)
+    if (!message || message.role !== 'user') return
+
+    isLoading.value = true
+    error.value = null
+
+    const userMessages = messages.value.filter(m => m.role === 'user' && m.id !== id)
+    const systemMessages = messages.value.filter(m => m.role === 'system')
+    const assistantMessages = messages.value.filter(m => m.role === 'assistant' && !m.content.includes('[发送失败]'))
+
+    const chatMessages = [
+      ...userMessages.map(m => ({ role: m.role, content: m.content })),
+      ...assistantMessages.map(m => ({ role: m.role, content: m.content }))
+    ]
+
+    const newAiMsg = addMessage('assistant', '')
+    chatMessages.push({ role: 'assistant', content: '' })
+
+    try {
+      await sendChatMessage(chatMessages, (content) => {
+        updateLastMessage(content)
+      })
+      message.error = undefined
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : '发送失败'
+      error.value = errMsg
+      message.error = errMsg
+      updateLastMessage('[发送失败]')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     messages,
     isLoading,
@@ -100,11 +142,13 @@ export const useChatStore = defineStore('chat', () => {
     setLoading,
     setError,
     updateMessageContent,
+    updateMessageError,
     deleteMessages,
     enterDeleteMode,
     exitDeleteMode,
     toggleMessageSelection,
     clearSelection,
-    setEditingMessageId
+    setEditingMessageId,
+    resendMessage
   }
 })

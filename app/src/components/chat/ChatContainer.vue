@@ -56,6 +56,10 @@ async function handleSend(content: string) {
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : '发送失败'
     chatStore.setError(errMsg)
+    const lastUserMsg = messages.value.filter(m => m.role === 'user').pop()
+    if (lastUserMsg) {
+      chatStore.updateMessageError(lastUserMsg.id, errMsg)
+    }
     chatStore.updateLastMessage('[发送失败]')
   } finally {
     chatStore.setLoading(false)

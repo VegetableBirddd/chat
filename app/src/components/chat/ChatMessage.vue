@@ -16,6 +16,8 @@ const isUser = computed(() => props.message.role === 'user')
 const isEditing = computed(() => chatStore.editingMessageId === props.message.id)
 const isSelected = computed(() => chatStore.selectedMessageIds.includes(props.message.id))
 const showActions = computed(() => isUser.value && isHovered.value && !chatStore.isDeleting && !isEditing.value)
+const hasError = computed(() => isUser.value && !!props.message.error)
+const isResending = computed(() => chatStore.isLoading)
 
 function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString('zh-CN', {
@@ -63,6 +65,10 @@ function handleDeleteClick() {
 function handleCheckChange() {
   chatStore.toggleMessageSelection(props.message.id)
 }
+
+function handleResend() {
+  chatStore.resendMessage(props.message.id)
+}
 </script>
 
 <template>
@@ -72,6 +78,24 @@ function handleCheckChange() {
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
   >
+    <div
+      v-if="hasError && message.role === 'user'"
+      class="flex items-center"
+    >
+      <button
+        @click="handleResend"
+        :disabled="isResending"
+        class="p-1.5 rounded-full bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-500 dark:text-red-400 transition-colors"
+        :class="{ 'animate-spin': isResending }"
+      >
+        <svg v-if="!isResending" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+      </button>
+    </div>
     <div
       class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium shrink-0"
       :class="message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'"
