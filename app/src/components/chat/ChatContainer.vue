@@ -15,14 +15,16 @@ const messages = computed(() => chatStore.messages)
 const isLoading = computed(() => chatStore.isLoading)
 const canSend = computed(() => isConfigured())
 
-onMounted(() => {
-  if (sessionStore.currentSessionId) {
+watch(() => sessionStore.currentSessionId, (newId) => {
+  if (newId) {
     isLoadingSession.value = true
-    const saved = sessionStore.getSessionMessages(sessionStore.currentSessionId)
+    const saved = sessionStore.getSessionMessages(newId)
     chatStore.messages = [...saved]
     isLoadingSession.value = false
+  } else {
+    chatStore.clearMessages()
   }
-})
+}, { immediate: true })
 
 watch(messages, (newMessages) => {
   if (sessionStore.currentSessionId && !isLoadingSession.value) {
