@@ -23,7 +23,7 @@ export const useSessionStore = defineStore('session', () => {
   function createSession(): string {
     const id = crypto.randomUUID()
     const now = Date.now()
-    sessions.value.unshift({
+    sessions.value.push({
       id,
       title: '新对话',
       messages: [],
@@ -85,7 +85,7 @@ export const useSessionStore = defineStore('session', () => {
       const data = localStorage.getItem(STORAGE_KEY)
       if (data) {
         sessions.value = JSON.parse(data)
-        currentSessionId.value = sessions.value[0]?.id ?? null
+        currentSessionId.value = sessions.value[sessions.value.length - 1]?.id ?? null
       }
     } catch (e) {
       console.error('Failed to load sessions:', e)

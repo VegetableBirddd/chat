@@ -13,7 +13,7 @@ function handleCreate() {
   sessionStore.createSession()
   nextTick(() => {
     if (listRef.value) {
-      listRef.value.scrollTop = 0
+      listRef.value.scrollTop = listRef.value.scrollHeight
     }
   })
 }
