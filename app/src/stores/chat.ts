@@ -7,7 +7,12 @@ export const useChatStore = defineStore('chat', () => {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
+  const editingMessageId = ref<string | null>(null)
+  const isDeleting = ref(false)
+  const selectedMessageIds = ref<string[]>([])
+
   const hasMessages = computed(() => messages.value.length > 0)
+  const selectedCount = computed(() => selectedMessageIds.value.length)
 
   function addMessage(role: MessageRole, content: string) {
     const message: Message = {
@@ -40,15 +45,66 @@ export const useChatStore = defineStore('chat', () => {
     error.value = err
   }
 
+  function updateMessageContent(id: string, content: string) {
+    const message = messages.value.find(m => m.id === id)
+    if (message) {
+      message.content = content
+    }
+  }
+
+  function deleteMessages(ids: string[]) {
+    messages.value = messages.value.filter(m => !ids.includes(m.id))
+    selectedMessageIds.value = []
+    isDeleting.value = false
+  }
+
+  function enterDeleteMode() {
+    isDeleting.value = true
+    selectedMessageIds.value = []
+  }
+
+  function exitDeleteMode() {
+    isDeleting.value = false
+    selectedMessageIds.value = []
+  }
+
+  function toggleMessageSelection(id: string) {
+    const index = selectedMessageIds.value.indexOf(id)
+    if (index === -1) {
+      selectedMessageIds.value.push(id)
+    } else {
+      selectedMessageIds.value.splice(index, 1)
+    }
+  }
+
+  function clearSelection() {
+    selectedMessageIds.value = []
+  }
+
+  function setEditingMessageId(id: string | null) {
+    editingMessageId.value = id
+  }
+
   return {
     messages,
     isLoading,
     error,
+    editingMessageId,
+    isDeleting,
+    selectedMessageIds,
     hasMessages,
+    selectedCount,
     addMessage,
     updateLastMessage,
     clearMessages,
     setLoading,
-    setError
+    setError,
+    updateMessageContent,
+    deleteMessages,
+    enterDeleteMode,
+    exitDeleteMode,
+    toggleMessageSelection,
+    clearSelection,
+    setEditingMessageId
   }
 })
