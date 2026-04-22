@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, nextTick, watch } from 'vue'
 import { useSessionStore } from '@/stores/session'
 import SidebarItem from './SidebarItem.vue'
 
 const sessionStore = useSessionStore()
+const listRef = ref<HTMLElement>()
 
 const sessions = computed(() => sessionStore.sessions)
 const currentSessionId = computed(() => sessionStore.currentSessionId)
 
 function handleCreate() {
   sessionStore.createSession()
+  nextTick(() => {
+    if (listRef.value) {
+      listRef.value.scrollTop = 0
+    }
+  })
 }
 
 function handleSelect(id: string) {
@@ -28,7 +34,7 @@ function handleDelete(id: string) {
         + 新建对话
       </button>
     </div>
-    <div class="sidebar__list">
+    <div ref="listRef" class="sidebar__list">
       <SidebarItem
         v-for="session in sessions"
         :key="session.id"
@@ -78,5 +84,18 @@ function handleDelete(id: string) {
   flex: 1;
   overflow-y: auto;
   padding: 8px 0;
+}
+
+.sidebar__list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar__list::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+}
+
+.sidebar__list::-webkit-scrollbar-track {
+  background: transparent;
 }
 </style>
