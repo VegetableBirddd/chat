@@ -32,6 +32,7 @@ defineEmits<{
 
 <style scoped>
 .sidebar-item {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,7 +52,7 @@ defineEmits<{
 }
 
 .sidebar-item--active:hover {
-  background-color: #d1d5db;
+  /* background-color: #d1d5db; */
 }
 
 .sidebar-item__title {
@@ -64,12 +65,15 @@ defineEmits<{
 }
 
 .sidebar-item__delete {
+  position: absolute;
+  right: 8px;
   display: none;
   padding: 2px 6px;
   font-size: 16px;
   color: #9ca3af;
-  background: none;
+  background: #f3f4f6;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 

@@ -2,6 +2,11 @@
 
 ## 2026-04-22
 
+### 修复
+- 修复空聊天时右侧区域宽度太窄的问题：ChatContainer 添加 flex-1
+- 修复 MessageList 空状态布局：添加 flex-1 和 display flex
+- 修复 SidebarItem hover 时高度变化：删除按钮改为绝对定位
+
 ### 新增
 - 初始化 Vue 3 + Vite + TypeScript 项目
 - 配置 Tailwind CSS
