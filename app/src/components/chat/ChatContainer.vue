@@ -1,16 +1,31 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useChatStore } from '@/stores/chat'
+import { useSessionStore } from '@/stores/session'
 import { sendChatMessage, isConfigured } from '@/services/api'
 import MessageList from './MessageList.vue'
 import InputBox from './InputBox.vue'
 
 const chatStore = useChatStore()
+const sessionStore = useSessionStore()
 const messageListRef = ref<InstanceType<typeof MessageList>>()
 
 const messages = computed(() => chatStore.messages)
 const isLoading = computed(() => chatStore.isLoading)
 const canSend = computed(() => isConfigured())
+
+onMounted(() => {
+  if (sessionStore.currentSessionId) {
+    const saved = sessionStore.getSessionMessages(sessionStore.currentSessionId)
+    chatStore.messages = [...saved]
+  }
+})
+
+watch(messages, (newMessages) => {
+  if (sessionStore.currentSessionId) {
+    sessionStore.updateSessionMessages(sessionStore.currentSessionId, [...newMessages])
+  }
+}, { deep: true })
 
 async function handleSend(content: string) {
   if (!canSend.value) {
@@ -44,6 +59,9 @@ async function handleSend(content: string) {
 
 function handleClear() {
   chatStore.clearMessages()
+  if (sessionStore.currentSessionId) {
+    sessionStore.updateSessionMessages(sessionStore.currentSessionId, [])
+  }
 }
 </script>
 
