@@ -18,5 +18,16 @@
 ### 配置
 - 配置路径别名 `@/` 
 - 添加环境变量配置 `.env.example` 和 `.env`
+
+### 修复
 - 修复 MessageList 组件中 props 引用问题
 - 修复流式输出：axios 改用 Fetch API 实现
+- 去除没有的库：VueUse、Axios 依赖
+
+### 新增功能
+- 添加左侧边栏会话管理：
+  - `Sidebar.vue` - 侧边栏容器
+  - `SidebarItem.vue` - 会话列表项
+  - `stores/session.ts` - 会话状态管理
+- 会话数据存储在 localStorage，支持历史恢复
+- 支持新建/切换/删除会话

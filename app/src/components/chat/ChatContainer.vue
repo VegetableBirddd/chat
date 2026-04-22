@@ -9,6 +9,7 @@ import InputBox from './InputBox.vue'
 const chatStore = useChatStore()
 const sessionStore = useSessionStore()
 const messageListRef = ref<InstanceType<typeof MessageList>>()
+const isLoadingSession = ref(false)
 
 const messages = computed(() => chatStore.messages)
 const isLoading = computed(() => chatStore.isLoading)
@@ -16,13 +17,15 @@ const canSend = computed(() => isConfigured())
 
 onMounted(() => {
   if (sessionStore.currentSessionId) {
+    isLoadingSession.value = true
     const saved = sessionStore.getSessionMessages(sessionStore.currentSessionId)
     chatStore.messages = [...saved]
+    isLoadingSession.value = false
   }
 })
 
 watch(messages, (newMessages) => {
-  if (sessionStore.currentSessionId) {
+  if (sessionStore.currentSessionId && !isLoadingSession.value) {
     sessionStore.updateSessionMessages(sessionStore.currentSessionId, [...newMessages])
   }
 }, { deep: true })
