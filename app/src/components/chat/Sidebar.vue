@@ -68,46 +68,46 @@ function handleSearchSelect(sessionId: string, _messageId?: string) {
 
 <style scoped>
 .sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 260px;
+  min-width: 260px;
   height: 100vh;
-  background-color: #fafafa;
-  border-right: 1px solid #e5e7eb;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-default);
   display: flex;
   flex-direction: column;
 }
 
 .sidebar__header {
   padding: 16px 12px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .sidebar__new-btn {
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 16px;
   font-size: 14px;
-  color: #374151;
-  background-color: white;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  color: var(--text-sidebar);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .sidebar__new-btn:hover {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
+  background-color: var(--bg-hover);
+  border-color: var(--border-hover);
 }
 
 .sidebar__search-btn {
   width: 100%;
   margin-top: 8px;
-  padding: 8px 12px;
+  padding: 10px 16px;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
   background-color: transparent;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s;
   display: flex;
@@ -117,8 +117,8 @@ function handleSearchSelect(sessionId: string, _messageId?: string) {
 }
 
 .sidebar__search-btn:hover {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--bg-hover);
+  color: var(--text-sidebar);
 }
 
 .sidebar__list {
@@ -132,7 +132,7 @@ function handleSearchSelect(sessionId: string, _messageId?: string) {
 }
 
 .sidebar__list::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
+  background-color: var(--border-hover);
   border-radius: 4px;
 }
 
