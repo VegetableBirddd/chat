@@ -25,18 +25,19 @@ function getFileIcon(type: string): string {
 </script>
 
 <template>
-  <div v-if="files.length > 0" class="flex flex-wrap gap-2">
+  <div v-if="files.length > 0" class="flex gap-2 overflow-x-auto pb-2" style="scrollbar-width: none; -ms-overflow-style: none;">
     <div
       v-for="file in files"
       :key="file.id"
-      class="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm group"
+      class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm group shrink-0 border"
+      style="background-color: var(--bg-card); border-color: var(--border-default);"
     >
       <span class="text-base">{{ getFileIcon(file.type) }}</span>
       <div class="flex flex-col">
-        <span class="text-gray-700 dark:text-gray-300 truncate max-w-[150px]" :title="file.name">
+        <span class="truncate max-w-[150px]" :title="file.name" style="color: var(--text-sidebar);">
           {{ file.name }}
         </span>
-        <span class="text-xs text-gray-400">{{ formatSize(file.size) }}</span>
+        <span class="text-xs" style="color: var(--text-tertiary);">{{ formatSize(file.size) }}</span>
       </div>
       <button
         @click.stop="emit('remove', file.id)"
