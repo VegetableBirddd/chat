@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import type { Message } from '@/types'
 import { useChatStore } from '@/stores/chat'
+import { useCodeHighlight } from '@/composables/useCodeHighlight'
+import CodeBlock from './CodeBlock.vue'
 
 const props = defineProps<{
   message: Message
@@ -12,12 +14,22 @@ const isHovered = ref(false)
 const editContent = ref('')
 const copied = ref(false)
 
+const { detectCodeBlocks, extractTextWithoutCodeBlocks } = useCodeHighlight()
+
 const isUser = computed(() => props.message.role === 'user')
 const isEditing = computed(() => chatStore.editingMessageId === props.message.id)
 const isSelected = computed(() => chatStore.selectedMessageIds.includes(props.message.id))
 const showActions = computed(() => isUser.value && isHovered.value && !chatStore.isDeleting && !isEditing.value)
 const hasError = computed(() => isUser.value && !!props.message.error)
 const isResending = computed(() => chatStore.isLoading)
+
+const codeBlocks = computed(() => {
+  return detectCodeBlocks(props.message.content)
+})
+
+const textContent = computed(() => {
+  return extractTextWithoutCodeBlocks(props.message.content)
+})
 
 function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString('zh-CN', {
@@ -144,7 +156,24 @@ function handleResend() {
               isSelected && chatStore.isDeleting ? 'ring-2 ring-blue-400' : ''
             ]"
           >
-            {{ message.content }}
+            <!-- Render text content -->
+            <div v-if="textContent.trim()" class="mb-3">
+              {{ textContent }}
+            </div>
+            
+            <!-- Render code blocks -->
+            <div v-if="codeBlocks.length > 0" class="space-y-3">
+              <CodeBlock 
+                v-for="(codeBlock, index) in codeBlocks" 
+                :key="index"
+                :code-block="codeBlock"
+              />
+            </div>
+            
+            <!-- Show empty state if no content -->
+            <div v-if="!textContent.trim() && codeBlocks.length === 0" class="text-gray-400 italic">
+              [Empty message]
+            </div>
             <div
               v-if="showActions"
               class="absolute -bottom-7 left-0 flex items-center gap-0.5 bg-white dark:bg-gray-700 rounded-lg shadow-md border border-gray-200 dark:border-gray-600 px-1 py-0.5 animate-fade-in"
