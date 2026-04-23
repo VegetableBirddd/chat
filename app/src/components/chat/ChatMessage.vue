@@ -111,6 +111,8 @@ function handleResend() {
       {{ message.role === 'user' ? 'U' : 'AI' }}
     </div>
     <div class="flex flex-col max-w-[75%]" :class="message.role === 'user' ? 'items-end' : 'items-start'">
+      <!-- 时间戳 - 移到头像旁边 -->
+      <span class="text-xs text-[var(--text-tertiary)] mb-1 px-1">{{ formatTime(message.timestamp) }}</span>
       <div class="flex items-start gap-2">
         <div v-if="chatStore.isDeleting" class="flex items-center pt-3">
           <input
@@ -233,7 +235,6 @@ function handleResend() {
               </button>
             </div>
           </div>
-          <span class="text-xs text-[var(--text-tertiary)] mt-1 px-1">{{ formatTime(message.timestamp) }}</span>
         </div>
       </div>
     </div>
