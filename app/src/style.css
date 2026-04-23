@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+/* Import highlight.js theme */
+@import 'highlight.js/styles/github.css';
+
+/* Custom styles for code blocks */
+.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.code-block pre code.hljs {
+  display: block;
+  overflow-x: auto;
+}
+
+.code-block .line-numbers {
+  user-select: none;
+}
