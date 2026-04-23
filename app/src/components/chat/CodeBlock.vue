@@ -39,13 +39,13 @@ async function handleCopy() {
 </script>
 
 <template>
-  <div class="code-block rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 overflow-hidden">
-    <div class="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900">
+  <div class="code-block rounded-lg border overflow-hidden" style="background: var(--bg-code); border-color: var(--border-divider);">
+    <div class="flex items-center justify-between px-4 py-2 border-b" style="background: var(--bg-code-header); border-color: var(--border-default);">
       <div class="flex items-center gap-2">
-        <span class="text-xs font-mono text-gray-600 dark:text-gray-400">
-          {{ codeBlock.language }}
+        <span class="text-xs font-mono" style="color: var(--text-secondary);">
+          {{ codeBlock.language.toLowerCase() }}
         </span>
-        <span class="text-xs text-gray-500 dark:text-gray-500">
+        <span class="text-xs" style="color: var(--text-tertiary);">
           {{ lineCount }} lines
         </span>
       </div>
@@ -53,8 +53,11 @@ async function handleCopy() {
         @click="handleCopy"
         class="flex items-center gap-1 px-3 py-1 text-xs rounded-md transition-colors"
         :class="isCopied 
-          ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
+          ? 'text-green-700' 
+          : 'hover:opacity-80'"
+        :style="isCopied 
+          ? { background: '#d1fae5', color: 'var(--accent-success)' } 
+          : { background: 'var(--bg-sidebar)', color: 'var(--text-secondary)' }"
       >
         <svg v-if="isCopied" class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
@@ -67,7 +70,7 @@ async function handleCopy() {
     </div>
     <div class="relative overflow-auto">
       <div class="flex">
-        <div v-if="showLineNumbers" class="line-numbers select-none text-right py-2 px-3 bg-gray-100 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-xs font-mono">
+        <div v-if="showLineNumbers" class="line-numbers select-none text-right py-2 px-3 border-r text-xs font-mono" style="background: var(--bg-sidebar); border-color: var(--border-default); color: var(--text-tertiary);">
           <div v-for="n in lineCount" :key="n" class="leading-6">
             {{ n }}
           </div>
