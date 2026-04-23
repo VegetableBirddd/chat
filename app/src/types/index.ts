@@ -6,6 +6,13 @@ export interface Message {
   content: string
   timestamp: number
   error?: string
+  codeBlocks?: CodeBlock[]
+}
+
+export interface CodeBlock {
+  language: string
+  code: string
+  lineNumbers?: boolean
 }
 
 export interface ChatRequest {
