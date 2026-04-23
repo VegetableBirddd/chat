@@ -60,15 +60,16 @@ function handleUploadClick() {
 </script>
 
 <template>
-  <div class="px-4 pb-4">
-    <div v-if="chatStore.isDeleting" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4">
-      <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-3">
-        已选择 <span class="font-semibold text-gray-900 dark:text-white">{{ chatStore.selectedCount }}</span> 条消息
+  <div class="px-6 pb-6" style="background-color: var(--bg-card); border-top: 1px solid var(--border-divider);">
+    <div v-if="chatStore.isDeleting" class="rounded-2xl p-4" style="background-color: var(--bg-input);">
+      <p class="text-sm text-center mb-3" style="color: var(--text-secondary);">
+        已选择 <span class="font-semibold" style="color: var(--text-primary);">{{ chatStore.selectedCount }}</span> 条消息
       </p>
       <div class="flex gap-2">
         <button
           @click="handleCancelDelete"
-          class="flex-1 py-2 rounded-xl text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          class="flex-1 py-2 rounded-xl text-sm transition-colors"
+          style="background-color: var(--bg-input); color: var(--text-secondary);"
         >
           取消
         </button>
@@ -76,19 +77,21 @@ function handleUploadClick() {
           @click="handleConfirmDelete"
           :disabled="!canDelete"
           class="flex-1 py-2 rounded-xl text-sm transition-colors"
-          :class="canDelete ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'"
+          :class="canDelete ? 'bg-red-500 text-white hover:bg-red-600' : 'cursor-not-allowed'"
+          :style="canDelete ? {} : { backgroundColor: 'var(--bg-input)', color: 'var(--text-tertiary)' }"
         >
           确认删除
         </button>
       </div>
     </div>
-    <div v-else class="flex flex-col gap-2 bg-gray-100 dark:bg-gray-800 rounded-2xl p-2">
+    <div v-else class="flex flex-col gap-2 rounded-2xl p-3" style="background-color: var(--bg-input);">
       <FilePreview v-if="uploadedFiles.length > 0" :files="uploadedFiles" @remove="removeFile" />
       <div v-if="uploadError" class="text-xs text-red-500 px-2">{{ uploadError }}</div>
       <div class="flex items-end gap-2">
         <button
           @click="handleUploadClick"
-          class="p-2 rounded-xl text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors shrink-0"
+          class="p-2 rounded-xl transition-colors shrink-0"
+          style="color: var(--text-tertiary);"
           :disabled="isUploading"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +102,7 @@ function handleUploadClick() {
           ref="textareaRef"
           v-model="inputValue"
           placeholder="输入消息..."
-          class="flex-1 bg-transparent resize-none outline-none text-sm py-2 px-2 max-h-48"
+          class="flex-1 bg-transparent resize-none outline-none text-sm py-2 px-2 max-h-48 placeholder-tertiary"
           :disabled="isLoading"
           @keydown="handleKeydown"
           @input="adjustHeight"
@@ -108,8 +111,11 @@ function handleUploadClick() {
         <button
           @click="handleSend"
           :disabled="!canSend"
-          class="p-2 rounded-xl transition-colors shrink-0"
-          :class="canSend ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'"
+          class="rounded-xl transition-colors shrink-0 flex items-center justify-center"
+          :class="canSend ? 'hover:opacity-90' : 'cursor-not-allowed'"
+          :style="canSend
+            ? { backgroundColor: 'var(--accent-primary)', color: 'white', width: '36px', height: '36px' }
+            : { backgroundColor: 'var(--accent-user)', color: 'var(--accent-primary)', width: '36px', height: '36px' }"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
