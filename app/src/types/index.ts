@@ -1,11 +1,18 @@
 export type MessageRole = 'user' | 'assistant' | 'system'
 
+export interface CodeBlock {
+  language: string
+  code: string
+  lineNumbers?: boolean
+}
+
 export interface Message {
   id: string
   role: MessageRole
   content: string
   timestamp: number
   error?: string
+  codeBlocks?: CodeBlock[]
 }
 
 export interface ChatRequest {
