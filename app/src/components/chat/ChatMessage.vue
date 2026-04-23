@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const chatStore = useChatStore()
-const { detectCodeBlocks, extractTextWithoutCodeBlocks } = useCodeHighlight()
+const { parseMessageContent } = useCodeHighlight()
 const isHovered = ref(false)
 const editContent = ref('')
 const copied = ref(false)
@@ -22,12 +22,8 @@ const showActions = computed(() => isUser.value && isHovered.value && !chatStore
 const hasError = computed(() => isUser.value && !!props.message.error)
 const isResending = computed(() => chatStore.isLoading)
 
-const codeBlocks = computed(() => {
-  return detectCodeBlocks(props.message.content)
-})
-
-const textContent = computed(() => {
-  return extractTextWithoutCodeBlocks(props.message.content)
+const messageParts = computed(() => {
+  return parseMessageContent(props.message.content)
 })
 
 function formatTime(timestamp: number): string {
@@ -155,18 +151,20 @@ function handleResend() {
               isSelected && chatStore.isDeleting ? 'ring-2 ring-blue-400' : ''
             ]"
           >
-            <!-- Render text content -->
-            <div v-if="textContent.trim()" class="mb-3">
-              {{ textContent }}
-            </div>
-            
-            <!-- Render code blocks -->
-            <div v-if="codeBlocks.length > 0" class="space-y-3">
-              <CodeBlock 
-                v-for="(codeBlock, index) in codeBlocks" 
-                :key="index"
-                :code-block="codeBlock"
-              />
+            <!-- Render message parts in correct order -->
+            <div class="space-y-3">
+              <template v-for="(part, index) in messageParts" :key="index">
+                <!-- Render text content -->
+                <div v-if="part.type === 'text'" class="whitespace-pre-wrap">
+                  {{ part.content }}
+                </div>
+                
+                <!-- Render code blocks -->
+                <CodeBlock 
+                  v-else-if="part.type === 'code' && part.codeBlock"
+                  :code-block="part.codeBlock"
+                />
+              </template>
             </div>
             
             <div
