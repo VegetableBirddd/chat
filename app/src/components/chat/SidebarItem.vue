@@ -15,7 +15,7 @@ defineEmits<{
 
 <template>
   <div 
-    class="sidebar-item"
+    class="sidebar-item relative flex items-center justify-between mx-2 px-4 py-3 rounded-lg cursor-pointer transition-all duration-150"
     :class="{ 'sidebar-item--active': isActive }"
     @click="$emit('select')"
   >
@@ -32,27 +32,29 @@ defineEmits<{
 
 <style scoped>
 .sidebar-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  margin: 2px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.15s;
+  color: var(--text-sidebar);
 }
 
 .sidebar-item:hover {
-  background-color: #f3f4f6;
+  background-color: #f0eeeb;
 }
 
 .sidebar-item--active {
-  background-color: #e5e7eb;
+  background-color: var(--accent-user);
+  color: var(--text-primary);
+  position: relative;
 }
 
-.sidebar-item--active:hover {
-  /* background-color: #d1d5db; */
+.sidebar-item--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background-color: var(--accent-primary);
+  border-radius: 0 2px 2px 0;
 }
 
 .sidebar-item__title {
@@ -61,20 +63,21 @@ defineEmits<{
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 14px;
-  color: #374151;
+  padding-right: 24px;
 }
 
 .sidebar-item__delete {
   position: absolute;
   right: 8px;
   display: none;
-  padding: 2px 6px;
+  padding: 4px 8px;
   font-size: 16px;
-  color: #9ca3af;
-  background: #f3f4f6;
+  color: var(--text-tertiary);
+  background: transparent;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: all 150ms ease-out;
 }
 
 .sidebar-item:hover .sidebar-item__delete {
@@ -82,6 +85,7 @@ defineEmits<{
 }
 
 .sidebar-item__delete:hover {
-  color: #ef4444;
+  color: var(--accent-error);
+  background-color: rgba(239, 68, 68, 0.1);
 }
 </style>
