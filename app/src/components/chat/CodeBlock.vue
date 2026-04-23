@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCodeHighlight } from '@/composables/useCodeHighlight'
 import type { CodeBlock } from '@/types'
+import DOMPurify from 'dompurify'
 
 const props = defineProps<{
   codeBlock: CodeBlock
@@ -12,7 +13,7 @@ const isCopied = ref(false)
 const highlightedCode = ref('')
 
 const lineCount = computed(() => {
-  return props.codeBlock.code.split('\n').length
+  return props.codeBlock.code.split(/\r?\n/).length
 })
 
 const showLineNumbers = computed(() => {
@@ -20,7 +21,8 @@ const showLineNumbers = computed(() => {
 })
 
 onMounted(() => {
-  highlightedCode.value = highlightCode(props.codeBlock.code, props.codeBlock.language)
+  const rawHighlighted = highlightCode(props.codeBlock.code, props.codeBlock.language)
+  highlightedCode.value = DOMPurify.sanitize(rawHighlighted)
 })
 
 async function handleCopy() {

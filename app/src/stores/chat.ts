@@ -101,7 +101,6 @@ export const useChatStore = defineStore('chat', () => {
     error.value = null
 
     const userMessages = messages.value.filter(m => m.role === 'user' && m.id !== id)
-    const systemMessages = messages.value.filter(m => m.role === 'system')
     const assistantMessages = messages.value.filter(m => m.role === 'assistant' && !m.content.includes('[发送失败]'))
 
     const chatMessages = [
@@ -109,7 +108,7 @@ export const useChatStore = defineStore('chat', () => {
       ...assistantMessages.map(m => ({ role: m.role, content: m.content }))
     ]
 
-    const newAiMsg = addMessage('assistant', '')
+    addMessage('assistant', '')
     chatMessages.push({ role: 'assistant', content: '' })
 
     try {

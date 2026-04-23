@@ -1,5 +1,61 @@
 # 开发记录
 
+## 2026-04-23
+
+### 新增功能 - 核心功能增强
+- **文件上传处理**：
+  - 支持拖拽上传和点击上传
+  - 支持 PDF、Word、Excel、图片、文本文件解析
+  - 文件大小限制 10MB，最多 5 个文件
+  - 自动解析文件内容并附加到消息发送给 AI
+  - 新增组件：`FileUpload.vue`、`FilePreview.vue`
+  - 新增服务：`fileParser.ts`（使用 pdfjs-dist、mammoth、xlsx）
+  - 新增 composable：`useFileUpload.ts`
+  - 集成到 `InputBox.vue` 和 `ChatMessage.vue`
+
+- **代码高亮增强**：
+  - 自动识别消息中的代码块（```language...```）
+  - 支持 50+ 编程语言语法高亮（highlight.js）
+  - 支持行号显示（多行代码显示，单行隐藏）
+  - 支持代码一键复制
+  - 修复代码块显示顺序问题：按原文顺序渲染
+  - 新增 composable：`useCodeHighlight.ts`
+  - 新增组件：`CodeBlock.vue`
+
+- **对话导出**：
+  - 支持导出为 Markdown 或 PDF 格式
+  - 可选择包含/排除元数据（时间戳）
+  - 可选择包含/排除系统消息
+  - 文件自动命名：`chat-{title}-{timestamp}.md/pdf`
+  - 新增组件：`ExportDialog.vue`
+  - 新增 composable：`useExport.ts`（使用 jspdf、markdown-it）
+  - 集成到 `ChatContainer.vue`
+
+- **搜索功能**：
+  - 支持实时搜索历史会话和消息内容
+  - 搜索范围包括会话标题和消息内容
+  - 高亮匹配关键词
+  - 点击结果跳转到对应会话
+  - 新增组件：`SearchPanel.vue`
+  - 新增服务：`searchIndex.ts`
+  - 新增 composable：`useSearch.ts`
+  - 集成到 `Sidebar.vue`
+
+### 类型扩展
+- 扩展 `types/index.ts`：
+  - 新增 `UploadedFile` 接口
+  - 新增 `ExportOptions` 接口
+  - 新增 `SearchResult` 接口
+  - 扩展 `Message` 接口添加 `files` 字段
+
+### 依赖更新
+- 新增：`pdfjs-dist`、`mammoth`、`xlsx`、`jspdf`、`markdown-it`
+- 新增 dev：`@types/jspdf`、`@types/markdown-it`
+
+### 修复
+- 修复 `tsconfig.app.json` 中 `baseUrl` 的 TypeScript 6.0 弃用警告
+- 修复未使用变量导致的构建错误
+
 ## 2026-04-22
 
 ### 新增功能

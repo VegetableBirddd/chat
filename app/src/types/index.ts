@@ -6,12 +6,38 @@ export interface CodeBlock {
   lineNumbers?: boolean
 }
 
+export interface UploadedFile {
+  id: string
+  name: string
+  type: string
+  size: number
+  content: string
+  preview?: string
+  uploadedAt: number
+}
+
+export interface ExportOptions {
+  format: 'markdown' | 'pdf'
+  includeMetadata: boolean
+  includeSystemMessages: boolean
+}
+
+export interface SearchResult {
+  sessionId: string
+  sessionTitle: string
+  messageId: string
+  content: string
+  relevance: number
+  timestamp: number
+}
+
 export interface Message {
   id: string
   role: MessageRole
   content: string
   timestamp: number
   error?: string
+  files?: UploadedFile[]
   codeBlocks?: CodeBlock[]
 }
 

@@ -14,7 +14,7 @@ const isHovered = ref(false)
 const editContent = ref('')
 const copied = ref(false)
 
-const { detectCodeBlocks, extractTextWithoutCodeBlocks } = useCodeHighlight()
+const { parseContentSegments } = useCodeHighlight()
 
 const isUser = computed(() => props.message.role === 'user')
 const isEditing = computed(() => chatStore.editingMessageId === props.message.id)
@@ -23,12 +23,8 @@ const showActions = computed(() => isUser.value && isHovered.value && !chatStore
 const hasError = computed(() => isUser.value && !!props.message.error)
 const isResending = computed(() => chatStore.isLoading)
 
-const codeBlocks = computed(() => {
-  return detectCodeBlocks(props.message.content)
-})
-
-const textContent = computed(() => {
-  return extractTextWithoutCodeBlocks(props.message.content)
+const contentSegments = computed(() => {
+  return parseContentSegments(props.message.content)
 })
 
 function formatTime(timestamp: number): string {
@@ -156,22 +152,41 @@ function handleResend() {
               isSelected && chatStore.isDeleting ? 'ring-2 ring-blue-400' : ''
             ]"
           >
-            <!-- Render text content -->
-            <div v-if="textContent.trim()" class="mb-3">
-              {{ textContent }}
+            <!-- Render content segments in order -->
+            <div
+              v-for="(segment, index) in contentSegments"
+              :key="index"
+              :class="segment.type === 'code' ? 'mb-3' : 'mb-3 whitespace-pre-wrap'"
+            >
+              <template v-if="segment.type === 'text'">
+                {{ segment.content }}
+              </template>
+              <template v-else-if="segment.type === 'code' && segment.codeBlock">
+                <CodeBlock :code-block="segment.codeBlock" />
+              </template>
             </div>
-            
-            <!-- Render code blocks -->
-            <div v-if="codeBlocks.length > 0" class="space-y-3">
-              <CodeBlock 
-                v-for="(codeBlock, index) in codeBlocks" 
-                :key="index"
-                :code-block="codeBlock"
-              />
+
+            <!-- Render file attachments -->
+            <div v-if="message.files && message.files.length > 0" class="mt-3 space-y-2">
+              <div
+                v-for="file in message.files"
+                :key="file.id"
+                class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-sm"
+              >
+                <span v-if="file.type.startsWith('image/')">🖼️</span>
+                <span v-else-if="file.type.includes('pdf')">📄</span>
+                <span v-else-if="file.type.includes('word') || file.type.includes('document')">📝</span>
+                <span v-else-if="file.type.includes('excel') || file.type.includes('sheet')">📊</span>
+                <span v-else>📃</span>
+                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[200px]" :title="file.name">
+                  {{ file.name }}
+                </span>
+                <span class="text-xs text-gray-400">{{ (file.size / 1024).toFixed(1) }} KB</span>
+              </div>
             </div>
-            
+
             <!-- Show empty state if no content -->
-            <div v-if="!textContent.trim() && codeBlocks.length === 0" class="text-gray-400 italic">
+            <div v-if="contentSegments.length === 0 && (!message.files || message.files.length === 0)" class="text-gray-400 italic">
               [Empty message]
             </div>
             <div

@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useChatStore } from '@/stores/chat'
 import { useSessionStore } from '@/stores/session'
 import { sendChatMessage, isConfigured } from '@/services/api'
+import { useExport } from '@/composables/useExport'
+import type { ExportOptions } from '@/types'
 import MessageList from './MessageList.vue'
 import InputBox from './InputBox.vue'
+import ExportDialog from './ExportDialog.vue'
 
 const chatStore = useChatStore()
 const sessionStore = useSessionStore()
-const messageListRef = ref<InstanceType<typeof MessageList>>()
+const { exportChat } = useExport()
 const isLoadingSession = ref(false)
+const showExportDialog = ref(false)
 
 const messages = computed(() => chatStore.messages)
 const isLoading = computed(() => chatStore.isLoading)
@@ -32,13 +36,23 @@ watch(messages, (newMessages) => {
   }
 }, { deep: true })
 
-async function handleSend(content: string) {
+async function handleSend(content: string, files?: any[]) {
   if (!canSend.value) {
     chatStore.setError('请配置 DeepSeek API Key')
     return
   }
 
-  chatStore.addMessage('user', content)
+  let messageContent = content
+  if (files && files.length > 0) {
+    const fileContents = files.map(f => `[文件: ${f.name}]\n${f.content}`).join('\n\n')
+    messageContent = content ? `${content}\n\n${fileContents}` : fileContents
+  }
+
+  const userMsg = chatStore.addMessage('user', messageContent)
+  if (files && files.length > 0) {
+    userMsg.files = files
+  }
+
   chatStore.setLoading(true)
   chatStore.setError(null)
 
@@ -72,22 +86,47 @@ function handleClear() {
     sessionStore.updateSessionMessages(sessionStore.currentSessionId, [])
   }
 }
+
+function handleExport(options: ExportOptions) {
+  try {
+    const title = sessionStore.currentSession?.title
+    exportChat(messages.value, options, title)
+    showExportDialog.value = false
+  } catch (err) {
+    chatStore.setError(err instanceof Error ? err.message : '导出失败')
+  }
+}
 </script>
 
 <template>
   <div class="flex-1 flex flex-col h-screen bg-white dark:bg-gray-900">
     <header class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
       <h1 class="text-lg font-semibold text-gray-900 dark:text-white">AI Chat</h1>
-      <button
-        v-if="messages.length > 0"
-        @click="handleClear"
-        class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-      >
-        清除对话
-      </button>
+      <div class="flex items-center gap-2">
+        <button
+          v-if="messages.length > 0"
+          @click="showExportDialog = true"
+          class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+        >
+          导出
+        </button>
+        <button
+          v-if="messages.length > 0"
+          @click="handleClear"
+          class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+        >
+          清除对话
+        </button>
+      </div>
     </header>
 
-    <MessageList ref="messageListRef" :messages="messages" :is-loading="isLoading" />
+    <ExportDialog
+      v-if="showExportDialog"
+      @export="handleExport"
+      @close="showExportDialog = false"
+    />
+
+    <MessageList :messages="messages" :is-loading="isLoading" />
 
     <div v-if="!canSend" class="px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 border-t border-yellow-200 dark:border-yellow-800">
       <p class="text-sm text-yellow-800 dark:text-yellow-200">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+// defineProps and defineEmits are compiler macros in <script setup>, no need to import
 import type { Session } from '@/stores/session'
 
 defineProps<{
