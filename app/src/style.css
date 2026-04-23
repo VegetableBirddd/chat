@@ -3,6 +3,52 @@
 /* Import highlight.js theme */
 @import 'highlight.js/styles/github.css';
 
+/* CSS Variables for Modern Minimal Design */
+:root {
+  /* 背景 */
+  --bg-page: #faf9f7;
+  --bg-sidebar: #f5f4f2;
+  --bg-card: #ffffff;
+  --bg-input: #f5f4f2;
+  --bg-code: #f8f9fa;
+  --bg-code-header: #f0eeeb;
+
+  /* 文字 */
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6b6b;
+  --text-tertiary: #9ca3af;
+  --text-sidebar: #374151;
+
+  /* 强调色 */
+  --accent-primary: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-user: #e8e4f9;
+  --accent-success: #10b981;
+  --accent-error: #ef4444;
+
+  /* 边框 */
+  --border-default: #e8e6e3;
+  --border-hover: #d1d5db;
+  --border-divider: #f0eeeb;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* 过渡 */
+  --transition-fast: 150ms ease-out;
+}
+
+/* 全局过渡 */
+* {
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast),
+              opacity var(--transition-fast);
+}
+
 /* Custom styles for code blocks */
 .hljs {
   background: transparent !important;
