@@ -99,21 +99,27 @@ function handleExport(options: ExportOptions) {
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col h-screen bg-white dark:bg-gray-900">
-    <header class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-      <h1 class="text-lg font-semibold text-gray-900 dark:text-white">AI Chat</h1>
+  <div class="flex-1 flex flex-col h-screen" style="background-color: var(--bg-page);">
+    <header class="flex items-center justify-between px-6 py-4" style="background-color: var(--bg-card); border-bottom: 1px solid var(--border-divider);">
+      <h1 class="text-lg font-semibold" style="color: var(--text-primary);">AI Chat</h1>
       <div class="flex items-center gap-2">
         <button
           v-if="messages.length > 0"
           @click="showExportDialog = true"
-          class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          class="text-sm"
+          style="color: var(--text-secondary);"
+          onmouseover="this.style.color='var(--text-primary)'"
+          onmouseout="this.style.color='var(--text-secondary)'"
         >
           导出
         </button>
         <button
           v-if="messages.length > 0"
           @click="handleClear"
-          class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          class="text-sm"
+          style="color: var(--text-secondary);"
+          onmouseover="this.style.color='var(--text-primary)'"
+          onmouseout="this.style.color='var(--text-secondary)'"
         >
           清除对话
         </button>
@@ -128,8 +134,8 @@ function handleExport(options: ExportOptions) {
 
     <MessageList :messages="messages" :is-loading="isLoading" />
 
-    <div v-if="!canSend" class="px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 border-t border-yellow-200 dark:border-yellow-800">
-      <p class="text-sm text-yellow-800 dark:text-yellow-200">
+    <div v-if="!canSend" class="px-6 py-3" style="background-color: #fef9c3; border-top: 1px solid #fde047;">
+      <p class="text-sm" style="color: #854d0e;">
         请在 .env 中配置 VITE_DEEPSEEK_API_KEY
       </p>
     </div>
