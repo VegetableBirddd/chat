@@ -60,8 +60,8 @@ function handleUploadClick() {
 </script>
 
 <template>
-  <div class="px-6 pb-6" style="background-color: var(--bg-card); border-top: 1px solid var(--border-divider);">
-    <div v-if="chatStore.isDeleting" class="rounded-2xl p-4" style="background-color: var(--bg-input);">
+  <div class="px-6 pb-6" style="background-color: transparent;">
+    <div v-if="chatStore.isDeleting" class="rounded-2xl p-4 shadow-lg" style="background-color: var(--bg-card); border: 1px solid var(--border-default);">
       <p class="text-sm text-center mb-3" style="color: var(--text-secondary);">
         已选择 <span class="font-semibold" style="color: var(--text-primary);">{{ chatStore.selectedCount }}</span> 条消息
       </p>
@@ -84,7 +84,7 @@ function handleUploadClick() {
         </button>
       </div>
     </div>
-    <div v-else class="flex flex-col gap-2 rounded-2xl p-3" style="background-color: var(--bg-input);">
+    <div v-else class="flex flex-col gap-2 rounded-2xl p-3 shadow-lg" style="background-color: var(--bg-card); border: 1px solid var(--border-default);">
       <FilePreview v-if="uploadedFiles.length > 0" :files="uploadedFiles" @remove="removeFile" />
       <div v-if="uploadError" class="text-xs text-red-500 px-2">{{ uploadError }}</div>
       <div class="flex items-end gap-2">
