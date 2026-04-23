@@ -25,22 +25,22 @@ defineExpose({ scrollToBottom })
 
 <template>
   <div ref="listRef" class="message-list">
-    <div v-if="props.messages.length === 0" class="flex-1 flex flex-col items-center justify-center text-gray-400">
-      <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div v-if="props.messages.length === 0" class="flex-1 flex flex-col items-center justify-center">
+      <svg class="w-12 h-12 mb-4" style="color: var(--text-tertiary); opacity: 0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
       </svg>
-      <p class="text-sm">开始对话吧</p>
+      <p class="text-sm" style="color: var(--text-tertiary)">开始新的对话</p>
     </div>
     <div v-else class="py-4">
       <ChatMessage v-for="msg in props.messages" :key="msg.id" :message="msg" />
       <div v-if="props.isLoading" class="flex gap-3 py-3">
-        <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-medium text-gray-700 dark:text-gray-200">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium" style="background-color: var(--bg-sidebar); color: var(--text-secondary); border: 1px solid var(--border-default)">
           AI
         </div>
         <div class="flex items-center gap-1">
-          <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-          <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-          <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--text-tertiary); animation-delay: 0ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--text-tertiary); animation-delay: 150ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--text-tertiary); animation-delay: 300ms"></span>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@ defineExpose({ scrollToBottom })
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
 .message-list::-webkit-scrollbar {
@@ -61,7 +61,7 @@ defineExpose({ scrollToBottom })
 }
 
 .message-list::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
+  background-color: var(--border-hover);
   border-radius: 4px;
 }
 
